@@ -134,53 +134,53 @@ RunService.Heartbeat:Connect(function()
         end
     end
 
-    if flyEnabled then 
-        local character = LocalPlayer.Character 
-        local hrp = character and character:FindFirstChild("HumanoidRootPart") 
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid") 
-        if hrp and humanoid then 
-            humanoid.PlatformStand = true 
-            if not flyVelocity or flyVelocity.Parent ~= hrp then 
-                if flyVelocity then flyVelocity:Destroy() end 
-                flyVelocity = Instance.new("BodyVelocity") 
-                flyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge) 
-                flyVelocity.Parent = hrp 
-            end 
-            if not flyGyro or flyGyro.Parent ~= hrp then 
-                if flyGyro then flyGyro:Destroy() end 
-                flyGyro = Instance.new("BodyGyro") 
-                flyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge) 
-                flyGyro.Parent = hrp 
-            end 
-            local camCFrame = workspace.CurrentCamera.CFrame 
-            flyGyro.CFrame = camCFrame 
-            if humanoid.MoveDirection.Magnitude > 0 then 
-                local localMove = camCFrame:VectorToObjectSpace(humanoid.MoveDirection) 
-                local flyDir = (camCFrame.LookVector * -localMove.Z) + (camCFrame.RightVector * localMove.X) 
-                if flyDir.Magnitude > 0 then flyDir = flyDir.unit end 
-                flyVelocity.Velocity = flyDir * flySpeed 
-            else 
-                flyVelocity.Velocity = Vector3.new(0, 0, 0) 
-            end 
-        end 
-    end 
-    
-    if freecamEnabled and freecamPart then 
-        local character = LocalPlayer.Character 
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid") 
-        if humanoid and freecamGyro and freecamVelocity then 
-            local camCFrame = workspace.CurrentCamera.CFrame 
-            freecamGyro.CFrame = camCFrame 
-            if humanoid.MoveDirection.Magnitude > 0 then 
-                local localMove = camCFrame:VectorToObjectSpace(humanoid.MoveDirection) 
-                local flyDir = (camCFrame.LookVector * -localMove.Z) + (camCFrame.RightVector * localMove.X) 
-                if flyDir.Magnitude > 0 then flyDir = flyDir.unit end 
-                freecamVelocity.Velocity = flyDir * freecamSpeed 
-            else 
-                freecamVelocity.Velocity = Vector3.new(0, 0, 0) 
-            end 
-        end 
-    end 
+    if flyEnabled then
+        local character = LocalPlayer.Character
+        local hrp = character and character:FindFirstChild("HumanoidRootPart")
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if hrp and humanoid then
+            humanoid.PlatformStand = true
+            if not flyVelocity or flyVelocity.Parent ~= hrp then
+                if flyVelocity then flyVelocity:Destroy() end
+                flyVelocity = Instance.new("BodyVelocity")
+                flyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                flyVelocity.Parent = hrp
+            end
+            if not flyGyro or flyGyro.Parent ~= hrp then
+                if flyGyro then flyGyro:Destroy() end
+                flyGyro = Instance.new("BodyGyro")
+                flyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                flyGyro.Parent = hrp
+            end
+            local camCFrame = workspace.CurrentCamera.CFrame
+            flyGyro.CFrame = camCFrame
+            if humanoid.MoveDirection.Magnitude > 0 then
+                local localMove = camCFrame:VectorToObjectSpace(humanoid.MoveDirection)
+                local flyDir = (camCFrame.LookVector * -localMove.Z) + (camCFrame.RightVector * localMove.X)
+                if flyDir.Magnitude > 0 then flyDir = flyDir.unit end
+                flyVelocity.Velocity = flyDir * flySpeed
+            else
+                flyVelocity.Velocity = Vector3.new(0, 0, 0)
+            end
+        end
+    end
+
+    if freecamEnabled and freecamPart then
+        local character = LocalPlayer.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if humanoid and freecamGyro and freecamVelocity then
+            local camCFrame = workspace.CurrentCamera.CFrame
+            freecamGyro.CFrame = camCFrame
+            if humanoid.MoveDirection.Magnitude > 0 then
+                local localMove = camCFrame:VectorToObjectSpace(humanoid.MoveDirection)
+                local flyDir = (camCFrame.LookVector * -localMove.Z) + (camCFrame.RightVector * localMove.X)
+                if flyDir.Magnitude > 0 then flyDir = flyDir.unit end
+                freecamVelocity.Velocity = flyDir * freecamSpeed
+            else
+                freecamVelocity.Velocity = Vector3.new(0, 0, 0)
+            end
+        end
+    end
 end)
 
 RunService.Stepped:Connect(function()
@@ -224,18 +224,20 @@ StarterGui:SetCore("SendNotification", {
     Duration = 5
 })
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SCRIPTHUB-dev-god/User-Interface/refs/heads/main/library/fire-ui.lua"))()
+-- UPDATED LIBRARY LOAD SESUAI DOC
+local library = loadstring(game:HttpGet("https://github.com/SCRIPTHUB-dev-god/User-Interface/releases/latest/download/fire-ui.lua"))()
 
 local window = library:window({
     title = "Super Ring [v1]",
     desc = "by icarus community",
     transparent = 0.15,
+    icon = "flame",
     theme = "ocean",
-    autoshow = true
+    autoshow = true,
+    addbacksound = true
 })
 
 local ExecutorName = "Unknown"
-
 if identifyexecutor then
     ExecutorName = identifyexecutor()
 elseif getexecutorname then
@@ -256,7 +258,6 @@ window:AddTag({
     getclick = true,
     callback = function()
         local invite = "https://discord.gg/dbE59H6grJ"
-
         if setclipboard then
             setclipboard(invite)
         elseif toclipboard then
@@ -269,7 +270,6 @@ window:AddTag({
             })
             return
         end
-
         library:Notification({
             title = "Clipboard",
             desc = "Discord invite copied to clipboard!",
@@ -278,25 +278,31 @@ window:AddTag({
     end
 })
 
+window:SetToggleUi({
+    title = "Super Ring [v1]",
+    icon = "flame"
+})
+
 local Tab1 = window:AddTab("Main", "home")
 local Tab2 = window:AddTab("Settings", "settings")
 
+-- FIX: open -> opened
 local Tab = Tab1:section({
     title = "Main Super Ring",
     icon = "settings",
-    open = true
+    opened = true
 })
 
 local SettingsSection = Tab2:section({
     title = "Options",
     icon = "settings",
-    open = true
+    opened = true
 })
 
 local PerformanceSection = Tab2:section({
     title = "others",
-    icon = "settings",
-    open = false
+    icon = "cpu",
+    opened = false
 })
 
 Tab:Addtoggle({
@@ -336,7 +342,7 @@ Tab:AddSlider({
     end
 })
 
-Tab:AddDivider()
+Tab:AddDivider("divider")
 
 Tab:Addtoggle({
     title = "Double Ring",
@@ -385,7 +391,7 @@ SettingsSection:AddSlider({
     end
 })
 
-SettingsSection:AddDivider()
+SettingsSection:AddDivider("divider")
 
 SettingsSection:Addtoggle({
     title = "Freecam",
@@ -396,40 +402,39 @@ SettingsSection:Addtoggle({
         local character = LocalPlayer.Character
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-
-        if state then 
-            if hrp and humanoid then 
-                hrp.Anchored = true 
-                oldMinZoom = LocalPlayer.CameraMinZoomDistance 
-                oldMaxZoom = LocalPlayer.CameraMaxZoomDistance 
-                LocalPlayer.CameraMinZoomDistance = 0 
-                LocalPlayer.CameraMaxZoomDistance = 0 
-                freecamPart = Instance.new("Part") 
-                freecamPart.Size = Vector3.new(1, 1, 1) 
-                freecamPart.Position = hrp.Position + Vector3.new(0, 5, 0) 
-                freecamPart.Transparency = 1 
-                freecamPart.CanCollide = false 
-                freecamPart.Anchored = false 
-                freecamPart.Parent = workspace 
-                freecamVelocity = Instance.new("BodyVelocity") 
-                freecamVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge) 
-                freecamVelocity.Velocity = Vector3.new(0, 0, 0) 
-                freecamVelocity.Parent = freecamPart 
-                freecamGyro = Instance.new("BodyGyro") 
-                freecamGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge) 
-                freecamGyro.Parent = freecamPart 
-                workspace.CurrentCamera.CameraSubject = freecamPart 
-            end 
-        else 
-            if hrp then hrp.Anchored = false end 
-            if freecamPart then freecamPart:Destroy() freecamPart = nil end 
-            if freecamVelocity then freecamVelocity:Destroy() freecamVelocity = nil end 
-            if freecamGyro then freecamGyro:Destroy() freecamGyro = nil end 
-            if humanoid then workspace.CurrentCamera.CameraSubject = humanoid end 
-            LocalPlayer.CameraMinZoomDistance = oldMinZoom 
-            LocalPlayer.CameraMaxZoomDistance = oldMaxZoom 
-        end 
-    end 
+        if state then
+            if hrp and humanoid then
+                hrp.Anchored = true
+                oldMinZoom = LocalPlayer.CameraMinZoomDistance
+                oldMaxZoom = LocalPlayer.CameraMaxZoomDistance
+                LocalPlayer.CameraMinZoomDistance = 0
+                LocalPlayer.CameraMaxZoomDistance = 0
+                freecamPart = Instance.new("Part")
+                freecamPart.Size = Vector3.new(1, 1, 1)
+                freecamPart.Position = hrp.Position + Vector3.new(0, 5, 0)
+                freecamPart.Transparency = 1
+                freecamPart.CanCollide = false
+                freecamPart.Anchored = false
+                freecamPart.Parent = workspace
+                freecamVelocity = Instance.new("BodyVelocity")
+                freecamVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                freecamVelocity.Velocity = Vector3.new(0, 0, 0)
+                freecamVelocity.Parent = freecamPart
+                freecamGyro = Instance.new("BodyGyro")
+                freecamGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                freecamGyro.Parent = freecamPart
+                workspace.CurrentCamera.CameraSubject = freecamPart
+            end
+        else
+            if hrp then hrp.Anchored = false end
+            if freecamPart then freecamPart:Destroy() freecamPart = nil end
+            if freecamVelocity then freecamVelocity:Destroy() freecamVelocity = nil end
+            if freecamGyro then freecamGyro:Destroy() freecamGyro = nil end
+            if humanoid then workspace.CurrentCamera.CameraSubject = humanoid end
+            LocalPlayer.CameraMinZoomDistance = oldMinZoom
+            LocalPlayer.CameraMaxZoomDistance = oldMaxZoom
+        end
+    end
 })
 
 SettingsSection:AddSlider({
@@ -463,7 +468,7 @@ PerformanceSection:Addtoggle({
             Lighting.EnvironmentDiffuseScale = 0
             Lighting.FogEnd = 999999
             Lighting.FogStart = 999999
-            
+
             table.clear(culledParts)
             for _, v in pairs(workspace:GetDescendants()) do
                 if v:IsA("BasePart") and not v:IsA("Terrain") and not v:IsDescendantOf(LocalPlayer.Character) then
@@ -477,7 +482,7 @@ PerformanceSection:Addtoggle({
                 end
             end
             clearAnimations(LocalPlayer.Character)
-            
+
             task.spawn(function()
                 while optimizePerformance do
                     local camera = workspace.CurrentCamera
