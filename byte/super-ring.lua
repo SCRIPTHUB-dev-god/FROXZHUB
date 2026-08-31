@@ -1,12 +1,11 @@
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
-local TextChatService = game:GetService("TextChatService")
 local Lighting = game:GetService("Lighting")
-
 local LocalPlayer = Players.LocalPlayer
-
 if not getgenv().Network then
     getgenv().Network = {
         BaseParts = {},
@@ -19,22 +18,20 @@ if not getgenv().Network then
             Part.CanCollide = false
         end
     end
-    local function EnablePartControl()
-        LocalPlayer.ReplicationFocus = workspace
-        RunService.Heartbeat:Connect(function()
+    LocalPlayer.ReplicationFocus = workspace
+    RunService.Heartbeat:Connect(function()
+        pcall(function()
             sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
-            for _, Part in pairs(Network.BaseParts) do
-                if Part:IsDescendantOf(workspace) then
-                    Part.Velocity = Network.Velocity
-                end
-            end
         end)
-    end
-    EnablePartControl()
+        for _, Part in pairs(Network.BaseParts) do
+            if Part:IsDescendantOf(workspace) then
+                Part.Velocity = Network.Velocity
+            end
+        end
+    end)
 end
-
-local radius = 50
-local radius2 = 50
+local radius = 85
+local radius2 = 85
 local doubleRingEnabled = false
 local height = 100
 local rotationSpeed = 6
@@ -50,17 +47,14 @@ local origFogEnd = 100000
 local origFogStart = 0
 local origAtmospheres = {}
 local culledParts = {}
-
 local freecamEnabled = false
 local freecamPart = nil
 local freecamVelocity = nil
 local freecamGyro = nil
 local oldMinZoom = 0.5
 local oldMaxZoom = 400
-
 local parts = {}
 local originalStates = {}
-
 local function addPart(part)
     if part:IsA("BasePart") and not part.Anchored and part:IsDescendantOf(workspace) then
         if part.Parent == LocalPlayer.Character or part:IsDescendantOf(LocalPlayer.Character) then
@@ -79,7 +73,6 @@ local function addPart(part)
         end
     end
 end
-
 local function removePart(part)
     local index = table.find(parts, part)
     if index then
@@ -87,14 +80,11 @@ local function removePart(part)
     end
     originalStates[part] = nil
 end
-
 for _, part in pairs(workspace:GetDescendants()) do
     addPart(part)
 end
-
 workspace.DescendantAdded:Connect(addPart)
 workspace.DescendantRemoving:Connect(removePart)
-
 local function getTargetPos(currentRadius, pos, tornadoCenter, reverse, heightOffset)
     local angle = math.atan2(pos.Z - tornadoCenter.Z, pos.X - tornadoCenter.X)
     local speed = reverse and -rotationSpeed or rotationSpeed
@@ -106,7 +96,6 @@ local function getTargetPos(currentRadius, pos, tornadoCenter, reverse, heightOf
         tornadoCenter.Z + math.sin(newAngle) * currentRadius
     )
 end
-
 RunService.Heartbeat:Connect(function()
     if ringPartsEnabled then
         local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -133,7 +122,6 @@ RunService.Heartbeat:Connect(function()
             end
         end
     end
-
     if flyEnabled then
         local character = LocalPlayer.Character
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
@@ -164,7 +152,6 @@ RunService.Heartbeat:Connect(function()
             end
         end
     end
-
     if freecamEnabled and freecamPart then
         local character = LocalPlayer.Character
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -182,7 +169,6 @@ RunService.Heartbeat:Connect(function()
         end
     end
 end)
-
 RunService.Stepped:Connect(function()
     if flyEnabled and LocalPlayer.Character then
         for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
@@ -192,7 +178,6 @@ RunService.Stepped:Connect(function()
         end
     end
 end)
-
 local function clearAnimations(character)
     if not character then return end
     local animate = character:FindFirstChild("Animate")
@@ -204,53 +189,42 @@ local function clearAnimations(character)
         end
     end
 end
-
 LocalPlayer.CharacterAdded:Connect(function(character)
     if optimizePerformance then
         task.wait(0.1)
         clearAnimations(character)
     end
 end)
-
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SCRIPTHUB-dev-god/User-Interface/main/library/fire-ui.lua", true))()
 local userId = Players:GetUserIdFromNameAsync("PGK_KINGGM4")
 local thumbType = Enum.ThumbnailType.HeadShot
 local thumbSize = Enum.ThumbnailSize.Size420x420
 local content, isReady = Players:GetUserThumbnailAsync(userId, thumbType, thumbSize)
-
 StarterGui:SetCore("SendNotification", {
     Title = "Enjoy Super Ring [V1]",
     Text = "Cracked By icarus community",
     Icon = content,
     Duration = 5
 })
-
--- UPDATED LIBRARY LOAD SESUAI DOC
-local library = loadstring(game:HttpGet("https://github.com/SCRIPTHUB-dev-god/User-Interface/releases/latest/download/fire-ui.lua"))()
-
 local window = library:window({
     title = "Super Ring [v1]",
     desc = "by icarus community",
     transparent = 0.15,
-    icon = "flame",
     theme = "ocean",
-    autoshow = true,
-    addbacksound = true
+    autoshow = true
 })
-
 local ExecutorName = "Unknown"
 if identifyexecutor then
     ExecutorName = identifyexecutor()
 elseif getexecutorname then
     ExecutorName = getexecutorname()
 end
-
 window:AddTag({
     title = ExecutorName,
     icon = "folder",
     color = Color3.fromRGB(45, 125, 255),
     getclick = false,
 })
-
 window:AddTag({
     title = "Join Discord",
     icon = "globe",
@@ -277,35 +251,9 @@ window:AddTag({
         })
     end
 })
-
-window:SetToggleUi({
-    title = "Super Ring [v1]",
-    icon = "flame"
-})
-
 local Tab1 = window:AddTab("Main", "home")
 local Tab2 = window:AddTab("Settings", "settings")
-
--- FIX: open -> opened
-local Tab = Tab1:section({
-    title = "Main Super Ring",
-    icon = "settings",
-    opened = true
-})
-
-local SettingsSection = Tab2:section({
-    title = "Options",
-    icon = "settings",
-    opened = true
-})
-
-local PerformanceSection = Tab2:section({
-    title = "others",
-    icon = "cpu",
-    opened = false
-})
-
-Tab:Addtoggle({
+Tab1:Addtoggle({
     title = "Super Ring",
     desc = "Click to enable",
     value = false,
@@ -331,8 +279,7 @@ Tab:Addtoggle({
         end
     end
 })
-
-Tab:AddSlider({
+Tab1:AddSlider({
     Title = "Radius Ring 1",
     Desc = "Radius super ring v1",
     Step = 5,
@@ -341,10 +288,8 @@ Tab:AddSlider({
         radius = value
     end
 })
-
-Tab:AddDivider("divider")
-
-Tab:Addtoggle({
+Tab1:AddDivider()
+Tab1:Addtoggle({
     title = "Double Ring",
     desc = "Enable two rings simultaneously",
     value = false,
@@ -352,8 +297,7 @@ Tab:Addtoggle({
         doubleRingEnabled = state
     end
 })
-
-Tab:AddSlider({
+Tab1:AddSlider({
     Title = "Radius Ring 2",
     Desc = "Radius for the second ring",
     Step = 5,
@@ -362,8 +306,7 @@ Tab:AddSlider({
         radius2 = value
     end
 })
-
-SettingsSection:Addtoggle({
+Tab2:Addtoggle({
     title = "Fly & Noclip",
     desc = "Click to enable fly and noclip",
     value = false,
@@ -380,8 +323,7 @@ SettingsSection:Addtoggle({
         end
     end
 })
-
-SettingsSection:AddSlider({
+Tab2:AddSlider({
     Title = "Speed Fly",
     Desc = "Slide to adjust fly speed",
     Step = 5,
@@ -390,10 +332,8 @@ SettingsSection:AddSlider({
         flySpeed = value
     end
 })
-
-SettingsSection:AddDivider("divider")
-
-SettingsSection:Addtoggle({
+Tab2:AddDivider()
+Tab2:Addtoggle({
     title = "Freecam",
     desc = "Click to enable freecam mode",
     value = false,
@@ -436,8 +376,7 @@ SettingsSection:Addtoggle({
         end
     end
 })
-
-SettingsSection:AddSlider({
+Tab2:AddSlider({
     Title = "Speed Freecam",
     Desc = "Slide to adjust freecam speed",
     Step = 5,
@@ -446,8 +385,8 @@ SettingsSection:AddSlider({
         freecamSpeed = value
     end
 })
-
-PerformanceSection:Addtoggle({
+Tab2:AddDivider()
+Tab2:Addtoggle({
     title = "Optimize Performance",
     desc = "Disable shadows, light reflections, textures, and animations to boost FPS",
     value = false,
@@ -468,7 +407,6 @@ PerformanceSection:Addtoggle({
             Lighting.EnvironmentDiffuseScale = 0
             Lighting.FogEnd = 999999
             Lighting.FogStart = 999999
-
             table.clear(culledParts)
             for _, v in pairs(workspace:GetDescendants()) do
                 if v:IsA("BasePart") and not v:IsA("Terrain") and not v:IsDescendantOf(LocalPlayer.Character) then
@@ -482,7 +420,6 @@ PerformanceSection:Addtoggle({
                 end
             end
             clearAnimations(LocalPlayer.Character)
-
             task.spawn(function()
                 while optimizePerformance do
                     local camera = workspace.CurrentCamera
@@ -531,11 +468,10 @@ PerformanceSection:Addtoggle({
         end
     end
 })
-
-PerformanceSection:Addbutton({
+Tab2:Addbutton({
     title = "touch fling",
     desc = "click for execute",
     callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/SCRIPTHUB-dev-god/exploit/refs/heads/main/fling/the-touch-fling.luau",true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/SCRIPTHUB-dev-god/exploit/refs/heads/main/fling/the-touch-fling.luau", true))()
     end
 })
