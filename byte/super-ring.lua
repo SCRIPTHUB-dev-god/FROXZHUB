@@ -281,19 +281,19 @@ window:AddTag({
 local Tab1 = window:AddTab("Main", "home")
 local Tab2 = window:AddTab("Settings", "settings")
 
-local Tab = Tab1:AddSection({
+local Tab = Tab1:section({
     title = "Main Super Ring",
     icon = "settings",
     open = true
 })
 
-local SettingsSection = Tab2:AddSection({
+local SettingsSection = Tab2:section({
     title = "Options",
     icon = "settings",
     open = true
 })
 
-local PerformanceSection = Tab2:AddSection({
+local PerformanceSection = Tab2:section({
     title = "others",
     icon = "settings",
     open = false
